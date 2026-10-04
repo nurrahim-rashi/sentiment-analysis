@@ -9,32 +9,32 @@ scraping, preprocessing, lexicon-based labeling, three training schemes, error a
 
 | Model | Features | Split | Train accuracy | Test accuracy | Test macro F1 |
 |---|---|---|---|---|---|
-| BiLSTM | Word embedding | 80/20 | 97.85% | 94.12% | 0.895 |
-| SVM (linear) | TF-IDF | 80/20 | 97.51% | 93.20% | 0.857 |
-| Logistic Regression | Bag of Words | 70/30 | 99.42% | 94.23% | 0.897 |
-| SVM (linear), tuned with grid search | TF-IDF | 80/20 | n/a | 94.37% | 0.894 |
+| BiLSTM | Word embedding | 80/20 | 99.37% | 94.94% | 0.908 |
+| SVM (linear) | TF-IDF | 80/20 | 97.56% | 93.33% | 0.861 |
+| Logistic Regression | Bag of Words | 70/30 | 99.40% | 94.17% | 0.896 |
+| SVM (linear), tuned with grid search | TF-IDF | 80/20 | n/a | 94.44% | 0.895 |
 
 Numbers come from the executed notebook in this repository. BiLSTM results vary slightly between runs and hardware.
 
 ## Dataset
 
-- 100,000 public reviews of the Gojek app, scraped from Google Play Store with `google-play-scraper` (22 Oct 2024 to 2 Oct 2026)
-- 60,497 reviews remain after removing duplicates and empty texts
-- Labels are assigned with the InSet Indonesian sentiment lexicon: 37,673 negative, 16,630 positive, 6,194 neutral
+- 100,000 public reviews of the Gojek app, scraped from Google Play Store with `google-play-scraper` (23 Oct 2024 to 3 Oct 2026)
+- 60,500 reviews remain after removing duplicates and empty texts
+- Labels are assigned with the InSet Indonesian sentiment lexicon: 37,676 negative, 16,628 positive, 6,196 neutral
 - User names and profile pictures are not stored
 
 ## Key findings
 
 1. **Errors concentrate on borderline reviews.** Reviews whose lexicon score is close to zero are misclassified about 12 times more often
-   than the rest, and about 80% of all BiLSTM errors involve the neutral class.
+   than the rest, and about 86% of all BiLSTM errors involve the neutral class.
 2. **Label quality is the main limitation.** About 37% of 4-5 star reviews receive a negative lexicon label. The reported accuracy measures
    agreement with the lexicon, not with human judgment.
 3. **Common preprocessing advice did not help here.** Stemming and negation merging lowered SVM accuracy by 2 to 4 points, because the labels
    were derived from single, unstemmed words.
 4. **Augmenting the minority class worked.** Label-checked synonym replacement, random insertion, and random swap raised neutral recall
-   from 0.55 to 0.65.
-5. **Tuning closed the gap to deep learning.** Grid search (`C`, n-gram range, class weights) raised the SVM from 93.2% to 94.4% test accuracy
-   and neutral recall from 0.55 to 0.74, matching the BiLSTM at a fraction of the training time.
+   from 0.57 to 0.65.
+5. **Tuning nearly closed the gap to deep learning.** Grid search (`C`, n-gram range, class weights) raised the SVM from 93.3% to 94.4% test accuracy
+   and neutral recall from 0.57 to 0.74, within about half a point of the BiLSTM at a fraction of the training time.
 
 ## Repository structure
 
@@ -53,11 +53,11 @@ pipeline are in Indonesian. All explanations are in English.
 
 ## Installation
 
-Python 3.10 or newer.
+Python 3.11 or newer.
 
 ```bash
-git clone <repository-url>
-cd <repository-folder>
+git clone https://github.com/nurrahim-rashi/sentiment-analysis.git
+cd sentiment-analysis
 python -m venv .venv
 source .venv/bin/activate        # Windows: .venv\Scripts\activate
 pip install -r requirements.txt jupyter
